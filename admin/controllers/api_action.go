@@ -71,3 +71,15 @@ func (c *ApiController) GetOne(ctx context.Context) {
 	c.RenderJson(ctx, oneApi)
 
 }
+
+func (c *ApiController) Del(ctx context.Context) {
+	var req ApiGetOneReq
+	c.GetRequest(ctx, &req)
+	apiKey := common_enum.ETCD_KEYS_APP_API_LIST + req.AppName + req.BaseApiUrl
+	ret, _ := etcd_client.DelKv(apiKey)
+	if ret != nil {
+
+	}
+
+	c.RenderJson(ctx, "删除成功")
+}

@@ -52,3 +52,9 @@ func DelKvPrefix(prefix string) (*clientv3.DeleteResponse, error) {
 	ret, err := kv.Delete(context.TODO(), prefix, clientv3.WithPrefix())
 	return ret, err
 }
+
+func DelKv(key string) (*clientv3.DeleteResponse, error) {
+	kv := clientv3.NewKV(etcdClient)
+	ret, err := kv.Delete(context.TODO(), key)
+	return ret, err
+}

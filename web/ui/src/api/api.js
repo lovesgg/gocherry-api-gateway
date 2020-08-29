@@ -24,3 +24,11 @@ export function getOneApi(data) {
   })
 }
 
+export function delApi(data) {
+  return request_api({
+    url: '/api/del',
+    method: 'post',
+    data
+  })
+}
+

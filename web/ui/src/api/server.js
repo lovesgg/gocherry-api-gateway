@@ -16,3 +16,11 @@ export function saveServer(data) {
   })
 }
 
+export function delServer(data) {
+  return request_api({
+    url: '/server/del',
+    method: 'post',
+    data
+  })
+}
+

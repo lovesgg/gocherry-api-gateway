@@ -53,3 +53,15 @@ func (c *ServerController) Save(ctx context.Context) {
 
 	c.RenderJson(ctx, "节点创建成功")
 }
+
+func (c *ServerController) Del(ctx context.Context) {
+	var req ServerSaveReq
+	c.GetRequest(ctx, &req)
+	serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + req.AppName + "/" + req.ClusterName + "/" + req.Ip
+	ret, _ := etcd_client.DelKv(serverKey)
+	if ret != nil {
+
+	}
+
+	c.RenderJson(ctx, "节点删除成功")
+}

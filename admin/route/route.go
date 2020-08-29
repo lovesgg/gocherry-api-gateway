@@ -36,6 +36,7 @@ func RegisterRoutes(app *iris.Application) {
 	app.PartyFunc("/server", func(route router.Party) {
 		route.Post("/list", controllers.ServerListHandler)
 		route.Post("/save", controllers.ServerSaveHandler)
+		route.Post("/del", controllers.ServerDelHandler)
 	})
 
 	/**
@@ -45,6 +46,7 @@ func RegisterRoutes(app *iris.Application) {
 		route.Post("/list", controllers.ApiListHandler)
 		route.Post("/save", controllers.ApiSaveHandler)
 		route.Post("/get_one", controllers.ApiGetOneHandler)
+		route.Post("/del", controllers.ApiDelOneHandler)
 	})
 
 	/**

@@ -36,13 +36,13 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button @click.native="" type="text" size="small">删除</el-button>
+          <el-button type="danger" @click.native="delServer(scope.row.ip)">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column
         label="其他">
         <template slot-scope="scope">
-          <el-button type="success" @click.native="delServer(scope.row.server_name)">测试</el-button>
+          <el-button type="success" @click.native="editServer(scope.row.server_name, scope.row.ip)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,7 +71,7 @@
 
 <script>
   import {getClusterList} from '../../api/cluster'
-  import {getServerList, saveServer} from '../../api/server'
+  import {getServerList, saveServer, delServer} from '../../api/server'
   import {AppListCurrent} from '../../enum/enum'
 
   export default {
@@ -137,7 +137,6 @@
         let params = this.serverEditForm
         params.app_name = app_name
         params.cluster_name = this.cluster_name
-        //params.server_name = this.serverEditForm.ip
         saveServer(params).then(response => {
           if (response.ret === 1) {
             this.dialogFormVisible = false
@@ -145,6 +144,25 @@
           }
         })
       },
+      editServer(server_name, ip) {
+       this.serverEditForm.server_name = server_name;
+       this.serverEditForm.ip = ip;
+        this.dialogFormVisible = true;
+      },
+      delServer(ip) {
+        let params = {
+          app_name: this.app_name,
+          cluster_name: this.cluster_name,
+          ip: ip,
+        }
+        delServer(params).then(response => {
+          if (response.ret === 1) {
+            this.getServerLists()
+          } else {
+            this.$message("删除失败")
+          }
+        })
+      }
     }
   }
 </script>

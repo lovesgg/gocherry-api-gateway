@@ -15,3 +15,7 @@ func ServerListHandler(ctx context.Context) {
 func ServerSaveHandler(ctx context.Context) {
 	serverController.Save(ctx)
 }
+
+func ServerDelHandler(ctx context.Context) {
+	serverController.Del(ctx)
+}

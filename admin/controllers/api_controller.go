@@ -19,3 +19,7 @@ func ApiSaveHandler(ctx context.Context) {
 func ApiGetOneHandler(ctx context.Context) {
 	apiController.GetOne(ctx)
 }
+
+func ApiDelOneHandler(ctx context.Context) {
+	apiController.Del(ctx)
+}

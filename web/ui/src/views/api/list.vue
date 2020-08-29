@@ -29,7 +29,7 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click.native="" type="text" size="small">删除</el-button>
+          <el-button type="danger" @click.native="delApi(scope.row.base_api_url)">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -44,20 +44,28 @@
 
 <script>
 
-  import {getApiList} from '../../api/api'
+  import {getApiList, delApi} from '../../api/api'
+  import {AppListCurrent} from '../../enum/enum'
 
   export default {
     data() {
       return {
         api_list: [],
+        app_name: "",
       }
     },
     created() {
-      this.getList()
+      let app_name = localStorage.getItem(AppListCurrent);
+      if (app_name === undefined || app_name === "") {
+        this.$message("应用不能为空");
+        return false;
+      }
+      this.app_name = app_name;
+      this.getList(app_name)
     },
     methods: {
-      getList() {
-        getApiList({}).then(response => {
+      getList(app_name) {
+        getApiList({app_name: app_name}).then(response => {
           if (response.ret === 1) {
             this.api_list = response.data
           }
@@ -68,6 +76,20 @@
       },
       turnEdit(url, base_cluster_name) {
         this.$router.push("/api/edit?api_url=" + url + "&base_cluster_name=" + base_cluster_name)
+      },
+      delApi(url) {
+        let params = {
+          app_name: this.app_name,
+          base_api_url: url,
+        }
+        delApi(params).then(response => {
+          if (response.ret === 1) {
+            this.getList(this.app_name);
+          } else {
+            this.$message("删除失败");
+          }
+        })
+
       }
     }
   }
