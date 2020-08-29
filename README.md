@@ -39,7 +39,9 @@ golang iris redis etcd mysql
 10. 访问静态页面即可进入登录页面，输入默认的账号密码即可
 
 环境  
-(rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor)   
+(rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor)     
+
+![image](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)
 
 #### 备注
 这是我本人业余时间开发的项目，不断完善中，其中有些不合理的地方需要持续优化，如果需要应用到生产环境应该读懂整个项目再去部署使用。
