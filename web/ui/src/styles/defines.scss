@@ -1,0 +1,17 @@
+@import "element-theme/theme-changed.scss";
+//导入element-theme-chalk的变量名
+@import "../../node_modules/element-theme-chalk/src/common/var.scss";
+
+//自定义颜色变量
+$my-custom-color: #0cdd3a;
+$my-custom-color2: #c655dd;
+//需要主题切换的变量
+$--my-text-color100: #050505; // dark:#f5f5f5
+$--my-text-color85: mix($--my-text-color100, $--my-text-color100, 85%); //dark:#ffffffd9 fade(@black, 85%);
+$--my-text-color65: mix($--my-text-color100, $--my-text-color100, 65%); //dark:#ffffffa6 fade(@black, 65%);
+$--my-text-color45: mix($--my-text-color100, $--my-text-color100, 45%); //dark: #ffffff73 fade(@black, 45%);
+
+$--my-background-color1: #fbf7f0;// 主背景色 dark:#363d43 light: #fbf7f0
+// $--my-background-color2: rgba(255, 255, 255, 0.89); //dark:#001529
+
+$--my-border-color1: #f6f6f6;// dark: #363d42 light:#f6f6f6

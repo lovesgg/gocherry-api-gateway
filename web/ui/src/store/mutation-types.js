@@ -1,0 +1,2 @@
+export const DEFAULT_THEME = 'DEFAULT_THEME'
+export const DEFAULT_COLOR = 'DEFAULT_COLOR'

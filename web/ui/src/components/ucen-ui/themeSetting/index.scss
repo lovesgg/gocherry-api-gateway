@@ -1,0 +1,52 @@
+@import '../../index.scss';
+
+.theme-setting {
+  margin-right: 10px;
+  /deep/.el-dialog {
+    background: $--my-background-color1;
+    .el-dialog__header {
+      .el-dialog__title {
+        color: $--my-text-color85;
+      }
+    }
+  }
+  .el-icon-setting {
+    cursor: pointer;
+    font-size: 25px;
+    color: $--my-text-color85;
+    &:hover {
+      color: $--my-text-color65;
+    }
+  }
+  .setting-container {
+    .primary-color-setting {
+      display: flex;
+      justify-content: center;
+      .item {
+        width: 30px;
+        height: 30px;
+        border-radius:  15px;
+        background-color: gray;
+        cursor: pointer;
+        &+.item {
+          margin-left: 20px;
+        }
+      }
+    }
+    .theme-setting {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      div {
+        cursor: pointer;
+        padding: 0px 15px;
+        color: whitesmoke;
+        border-radius: 5px;
+        background-color: $--color-primary;
+        &+div {
+          margin-left: 20px;
+        }
+      }
+    }
+  }
+}

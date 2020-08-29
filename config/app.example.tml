@@ -1,0 +1,26 @@
+[admin]
+app_name = "admin"
+app_port = "2215"
+log_dir = "/data/www/cherry_logs/admin/"
+
+
+[proxy]
+app_name = "proxy"
+app_port = "2216"
+log_dir = "/data/www/cherry_logs/proxy/"
+
+[common]
+test = "test"
+etcd_ip = "127.0.0.1"
+etcd_port = "2379"
+redis_proxy_ip = "127.0.0.1"
+redis_proxy_port = "6379"
+redis_proxy_pass = ""
+log_dir = "/tmp/"
+mysql_host = "127.0.0.1"
+mysql_port = "3306"
+mysql_user = "root"
+mysql_pass = ""
+mysql_db = "gocherry_api_gateway"
+mysql_debug = true
+
