@@ -55,6 +55,7 @@ func RegisterRoutes(app *iris.Application) {
 	app.PartyFunc("/user", func(route router.Party) {
 		route.Post("/list", controllers.UserListHandler)
 		route.Post("/save", controllers.UserSaveHandler)
+		route.Post("/del", controllers.UserDelHandler)
 	})
 
 	app.PartyFunc("/admin", func(route router.Party) {

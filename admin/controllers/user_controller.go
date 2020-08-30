@@ -12,7 +12,11 @@ func UserListHandler(ctx context.Context) {
 	userController.GetList(ctx)
 }
 
-
 func UserSaveHandler(ctx context.Context) {
 	userController.Save(ctx)
+}
+
+
+func UserDelHandler(ctx context.Context) {
+	userController.Del(ctx)
 }

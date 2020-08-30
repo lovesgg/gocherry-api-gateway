@@ -24,3 +24,12 @@ export function saveUser(data) {
     data
   })
 }
+
+
+export function delUser(data) {
+  return request_api({
+    url: '/user/del',
+    method: 'post',
+    data
+  })
+}

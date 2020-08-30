@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '@/router'
 import {LoginToken} from '../enum/enum'
 
 var serverMap = require('../../config/serverMap.js')
@@ -25,7 +26,6 @@ service.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-
 // response interceptor
 service.interceptors.response.use(
   /**
@@ -39,6 +39,13 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(response)
+    if (response.data.error !== undefined && response.data.error.code === 1024) {
+      localStorage.setItem(LoginToken, "")
+      router.push("/login")
+      return false;
+    }
+
     const res = response.data
     return res
   },

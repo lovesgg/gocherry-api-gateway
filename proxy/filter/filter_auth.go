@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"fmt"
 	"gocherry-api-gateway/components/common_enum"
 	"gocherry-api-gateway/components/redis_client"
 	"gocherry-api-gateway/proxy/enum"
@@ -42,8 +41,7 @@ func (f *AuthFilter) AfterDo(proxyContext *ProxyContext) (statusCode int, err st
 }
 
 func GetAuthCacheKey(proxyContext *ProxyContext) string {
-	header := proxyContext.RequestContext.Request().Header["auth_token"]
-	fmt.Println("hhh", header)
-	key := common_enum.REDIS_KEY_API_PROXY_AUTH_CHECK + proxyContext.AppName + "_" + string("l")
+	auth := proxyContext.RequestContext.Request().Header.Get("auth_token")
+	key := common_enum.REDIS_KEY_API_PROXY_AUTH_CHECK + proxyContext.AppName + "_" + auth
 	return key
 }

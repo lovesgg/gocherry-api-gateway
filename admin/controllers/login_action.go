@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/kataras/iris/context"
+	"gocherry-api-gateway/admin/admin_enum"
 	"gocherry-api-gateway/admin/models"
 	"gocherry-api-gateway/components/common_enum"
 	"gocherry-api-gateway/components/etcd_client"
+	"gocherry-api-gateway/components/redis_client"
 	"gocherry-api-gateway/components/utils"
+	"time"
 )
 
 type loginReq struct {
@@ -33,10 +35,15 @@ func (c *LoginController) LoginAction(ctx context.Context) {
 		_ = json.Unmarshal([]byte(value.Value), &oneApp)
 		appList = append(appList, oneApp)
 	}
-	fmt.Println(user.Id, user.ID)
 	if user.Phone != "" {
+		info, _ := json.Marshal(user)
+		renderKy := utils.GetMd5(req.Phone+string(time.Now().Unix()))
+		loginToken := admin_enum.ACCOUNT_LOGIN_TOKEN + renderKy
+		redis := redis_client.GetProxyRedis()
+		redis.Set(loginToken, string(info), common_enum.REDIS_EXPIRE_TIME_BY_FOUR_HOUR)
+
 		c.RenderJson(ctx, map[string]interface{}{
-			"login_token": req.Phone,
+			"login_token": renderKy,
 			"app_list":    appList,
 		})
 	} else {

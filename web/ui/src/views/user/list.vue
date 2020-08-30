@@ -24,7 +24,7 @@
       <el-table-column
         label="其他">
         <template slot-scope="scope">
-          <el-button type="success" @click.native="opStatus(scope.row.id)">其他</el-button>
+          <el-button type="danger" @click.native="opStatus(scope.row.phone)">禁用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-  import {getUserList, saveUser} from '../../api/user'
+  import {getUserList, saveUser, delUser} from '../../api/user'
 
   export default {
     data() {
@@ -108,8 +108,14 @@
           }
         })
       },
-      opStatus(id) {
-
+      opStatus(phone) {
+        delUser({phone: phone}).then(response => {
+          if (response.ret === 1) {
+            this.getList();
+          } else {
+            this.$message("删除失败");
+          }
+        })
       },
       save(formName) {
         //验证表单
