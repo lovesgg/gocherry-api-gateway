@@ -24,5 +24,6 @@ web/ui/*.njsproj
 web/ui/*.sln
 
 
-
+cmd/heath_check/main
+cmd/heath_check/heath_check
 

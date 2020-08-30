@@ -29,6 +29,7 @@ func main() {
 	app := iris.New()
 	app.Use(middleware.NewRecoverPanic())
 	app.Use(middleware.LoginAuth)
+	app.Done(middleware.OperateLog)
 
 	route.RegisterRoutes(app)
 
