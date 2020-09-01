@@ -33,13 +33,15 @@ golang iris redis etcd mysql
 4.  启动etcd 启动redis  
 5.  cp config/app.example.tml config/app.tml 
 6.  修改config/app.tml配置 (admin proxy common 三个选项都要配置)
-7.  rizla admin/main.go 热启动管理后台服务
-8.  cd web/ui && npm run dev 启动管理后台前端静态页面
-9.  rizla  proxy/main.go 启动proxy代理层的api转发服务
-10. 访问静态页面即可进入登录页面，输入默认的账号密码即可
+7.  export GO111MODULE=auto && go mod vendor 下载依赖
+8.  rizla admin/main.go 热启动管理后台服务
+9.  cd web/ui && npm run dev 启动管理后台前端静态页面
+10.  rizla  proxy/main.go 启动proxy代理层的api转发服务
+11. 访问静态页面即可进入登录页面，输入默认的账号密码即可
 
 环境  
-(rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor)     
+(rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor)    
+  主要关注admin proxy web/ui 三个目录 
 
 ![image](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)
 

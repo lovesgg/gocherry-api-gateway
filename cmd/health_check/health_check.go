@@ -33,15 +33,14 @@ func main() {
 			wg := sync.WaitGroup{}
 			wg.Add(length)
 			for _, ip := range serverList {
-				go func() {
-					fmt.Println(ip.Ip)
+				go func(ip controllers.ServerSaveReq) {
 					res, code, msg := http_client.Get(ip.Ip+"/health/check", 1 * time.Second)
 					if code != enum.STATUS_CODE_OK {
 						//在这禁用 禁用前根据实际业务需要比如请求失败5次就删除节点
 						fmt.Println(ip.Ip, res, code, msg, "禁用server")
 					}
 					wg.Done()
-				}()
+				}(ip)
 			}
 			wg.Wait()
 		}

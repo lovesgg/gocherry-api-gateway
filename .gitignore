@@ -26,4 +26,8 @@ web/ui/*.sln
 
 cmd/heath_check/main
 cmd/heath_check/heath_check
+cmd/heath_check
+admin/main
+proxy/main
+
 
