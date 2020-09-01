@@ -24,9 +24,9 @@ web/ui/*.njsproj
 web/ui/*.sln
 
 
-cmd/heath_check/main
-cmd/heath_check/heath_check
-cmd/heath_check
+cmd/health_check/main
+cmd/health_check/health_check
+cmd/health_check
 admin/main
 proxy/main
 
