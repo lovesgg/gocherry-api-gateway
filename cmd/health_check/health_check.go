@@ -25,6 +25,7 @@ func main() {
 
 		for _, value := range list.Kvs {
 			_ = json.Unmarshal([]byte(value.Value), &oneServer)
+			fmt.Println(oneServer)
 			serverList = append(serverList, oneServer)
 		}
 
@@ -32,15 +33,17 @@ func main() {
 		if length > 0 {
 			wg := sync.WaitGroup{}
 			wg.Add(length)
-			for _, ip := range serverList {
-				go func(ip controllers.ServerSaveReq) {
-					res, code, msg := http_client.Get(ip.Ip+"/health/check", 1 * time.Second)
+			for _, server := range serverList {
+				go func(server controllers.ServerSaveReq) {
+					res, code, msg := http_client.Get(server.Ip+"/health/check", 1 * time.Second)
 					if code != enum.STATUS_CODE_OK {
 						//在这禁用 禁用前根据实际业务需要比如请求失败5次就删除节点
-						fmt.Println(ip.Ip, res, code, msg, "禁用server")
+						serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + server.AppName + "/" + server.ClusterName + "/" + server.Ip
+						_, _ = etcd_client.DelKv(serverKey)
+						fmt.Println(serverKey, res, code, msg, " 禁用server")
 					}
 					wg.Done()
-				}(ip)
+				}(server)
 			}
 			wg.Wait()
 		}

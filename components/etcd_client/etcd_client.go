@@ -11,10 +11,10 @@ import (
 var etcdClient *clientv3.Client
 
 func init() {
-	etcdClient = getClient()
+	etcdClient = GetClient()
 }
 
-func getClient() *clientv3.Client {
+func GetClient() *clientv3.Client {
 	appConfig := services.GetAppConfig()
 	ipPort := appConfig.Common.EtcdIp + ":" + appConfig.Common.EtcdPort
 

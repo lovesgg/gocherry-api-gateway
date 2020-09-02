@@ -8,7 +8,7 @@ require (
 	github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398 // indirect
 	github.com/astaxie/beego v1.12.2 // indirect
 	github.com/aymerick/raymond v2.0.2+incompatible // indirect
-	github.com/coreos/etcd v3.3.24+incompatible // indirect
+	github.com/coreos/etcd v3.3.24+incompatible
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect

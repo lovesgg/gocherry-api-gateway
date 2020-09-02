@@ -43,7 +43,7 @@ golang iris redis etcd mysql
 (rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor)    
   主要关注admin proxy web/ui 三个目录 
 
-![image](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)
+  ![](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)  
 
 #### 备注
 这是我本人业余时间开发的项目，不断完善中，其中有些不合理的地方需要持续优化，如果需要应用到生产环境应该读懂整个项目再去部署使用。
@@ -51,7 +51,7 @@ golang iris redis etcd mysql
 #### 打赏
 
 请我喝咖啡 微信: jdk010
-
+  ![](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/me.jpeg)  
 
 #### 未来计划
 1.增加更多插件，优化现有插件  

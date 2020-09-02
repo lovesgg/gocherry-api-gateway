@@ -53,7 +53,7 @@ type UserInfo struct {
 /**
 接口唯一入口url处理 核心处理入口
 */
-func (c *ProxyController) DoProxyHandler(ctx context.Context, appConfig *common_enum.Config) {
+func (c *ProxyController) DoProxyHandler(ctx context.Context, appConfig *common_enum.Config, servers []string) {
 	var proxyContext *ProxyContext
 	//首先验证app_name
 	appName := GetAppName(ctx)
@@ -87,7 +87,7 @@ func (c *ProxyController) DoProxyHandler(ctx context.Context, appConfig *common_
 	}
 
 	//初始化插件没问题后组装请求到目标服务对应的地址，将结果返回
-	res, msg := ProxyRunToServer(proxyContext)
+	res, msg := ProxyRunToServer(proxyContext, servers)
 	if res != enum.STATUS_CODE_OK {
 		c.RenderError(ctx, common_enum.ComError{Msg: msg})
 		return

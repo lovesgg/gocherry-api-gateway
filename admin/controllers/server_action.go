@@ -1,11 +1,15 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
-	"github.com/kataras/iris/context"
+	"fmt"
+	irisContext "github.com/kataras/iris/context"
+	"go.etcd.io/etcd/clientv3"
 	"gocherry-api-gateway/components/common_enum"
 	"gocherry-api-gateway/components/etcd_client"
 	"gocherry-api-gateway/components/utils"
+	"time"
 )
 
 type ServerSaveReq struct {
@@ -16,7 +20,7 @@ type ServerSaveReq struct {
 	UpdateTime  string `json:"update_time"`
 }
 
-func (c *ServerController) GetList(ctx context.Context) {
+func (c *ServerController) GetList(ctx irisContext.Context) {
 	var req ServerSaveReq
 	c.GetRequest(ctx, &req)
 
@@ -37,7 +41,7 @@ func (c *ServerController) GetList(ctx context.Context) {
 	}
 }
 
-func (c *ServerController) Save(ctx context.Context) {
+func (c *ServerController) Save(ctx irisContext.Context) {
 	var req ServerSaveReq
 	c.GetRequest(ctx, &req)
 
@@ -48,13 +52,16 @@ func (c *ServerController) Save(ctx context.Context) {
 	}
 	req.UpdateTime = utils.GetNowTimeFormat()
 
+	_ = RegisterServer(req)
+
+	//存储详情 用于列表展示 不作为服务发现
 	newServer, _ := json.Marshal(req)
 	_, _ = etcd_client.PutKv(serverKey, string(newServer))
 
 	c.RenderJson(ctx, "节点创建成功")
 }
 
-func (c *ServerController) Del(ctx context.Context) {
+func (c *ServerController) Del(ctx irisContext.Context) {
 	var req ServerSaveReq
 	c.GetRequest(ctx, &req)
 	serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + req.AppName + "/" + req.ClusterName + "/" + req.Ip
@@ -64,4 +71,48 @@ func (c *ServerController) Del(ctx context.Context) {
 	}
 
 	c.RenderJson(ctx, "节点删除成功")
+}
+
+/**
+服务注册
+*/
+
+//注册服务
+func RegisterServer(requestData ServerSaveReq) error {
+	client := etcd_client.GetClient()
+	kv := clientv3.NewKV(client)
+	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER
+	ctx := context.Background()
+	lease := clientv3.NewLease(client)
+
+	//设置租约过期时间为20秒
+	leaseRes, err := clientv3.NewLease(client).Grant(ctx, 300)
+	if err != nil {
+		return err
+	}
+	_, err = kv.Put(context.Background(), key_prefix, requestData.Ip, clientv3.WithLease(leaseRes.ID)) //把服务的key绑定到租约下面
+	if err != nil {
+		return err
+	}
+	//续租时间大概自动为租约的三分之一时间，context.TODO官方定义为是你不知道要传什么
+	keepaliveRes, err := lease.KeepAlive(context.TODO(), leaseRes.ID)
+	if err != nil {
+		return err
+	}
+	go lisKeepAlive(keepaliveRes)
+	return err
+}
+
+/**
+续约
+*/
+func lisKeepAlive(keepaliveRes <-chan *clientv3.LeaseKeepAliveResponse) {
+	for {
+		select {
+		case ret := <-keepaliveRes:
+			if ret != nil {
+				fmt.Println("续租成功", time.Now())
+			}
+		}
+	}
 }
