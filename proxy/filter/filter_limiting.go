@@ -1,9 +1,9 @@
 package filter
 
 import (
-	"github.com/yangwenmai/ratelimit/simpleratelimit"
+	"gocherry-api-gateway/components/common_enum"
+	"gocherry-api-gateway/components/redis_client"
 	"gocherry-api-gateway/proxy/enum"
-	"time"
 )
 
 type LimitingFilter struct {
@@ -19,18 +19,24 @@ func (f *LimitingFilter) Name(proxyContext *ProxyContext) string {
 
 /**
 应该是基于当前app_and_url作为唯url，基于这值做限流
+目前是使用redis作为限流器
 */
 func (f *LimitingFilter) Pre(proxyContext *ProxyContext) (statusCode int, err string) {
 	limitNum := proxyContext.Api.LimitRequest
 	if limitNum > 0 {
-		rl := simpleratelimit.New(limitNum, time.Second)
-		if !rl.Limit() {
-			//return enum.STATUS_CODE_FAILED, "请求受限制"
+		key := common_enum.REDIS_KEY_API_PROXY_LIMITING + proxyContext.AppName + proxyContext.Url.Path
+		redis := redis_client.GetProxyRedis()
+		count := redis.Incr(key)
+		if count == 1 {
+			//第一次设置过期时间为1秒
+			redis.Expire(key, 1)
+			return enum.STATUS_CODE_OK, "ok"
 		}
-		//log.Printf("limit result: %v\n", rl.Limit())
-		//lb := leakybucket.New()
-		//_, _ = lb.Create("leaky_bucket", 10, time.Second)
+		if count > limitNum {
+			return enum.STATUS_CODE_FAILED, "请求太激烈了"
+		}
 	}
+	//无限制 或 没达到限制数量
 	return enum.STATUS_CODE_OK, "ok"
 }
 

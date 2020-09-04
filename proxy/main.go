@@ -25,6 +25,7 @@ func main() {
 	//初始化加载所有server节点
 	client, _ := filter.NewClientMon()
 	servers, _ := client.GetService()
+	fmt.Println(servers)
 
 	route.RegisterRoutes(app, appConfig, servers)
 

@@ -11,7 +11,7 @@ type Api struct {
 	BaseApiStatus      bool          `json:"base_api_status"`
 	BaseClusterName    string        `json:"base_cluster_name"`
 	CacheSave          time.Duration `json:"cache_save"`
-	LimitRequest       int           `json:"limit_request"`
+	LimitRequest       int64           `json:"limit_request"`
 	ReduceLevel        bool          `json:"reduce_level"`
 	TimeOut            time.Duration `json:"time_out"`
 	IpBlack            string        `json:"ip_black"`

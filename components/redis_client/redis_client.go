@@ -66,6 +66,16 @@ func (c Client) Del(key string) interface{} {
 	return ret
 }
 
+func (c Client) Incr(key string) int64 {
+	count, _ := c.baseClient.Incr(key).Result()
+	return count
+}
+
+func (c Client) Expire(key string, expiration time.Duration) bool {
+	ret, _ := c.baseClient.Expire(key, expiration * time.Second).Result()
+	return ret
+}
+
 //hash
 
 func (c Client) HSet(key string, field string, value interface{}, expiration time.Duration) interface{} {

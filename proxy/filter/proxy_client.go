@@ -23,6 +23,10 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers []string) (statusCode 
 	method := proxyContext.RequestContext.Method()
 	timeRe := proxyContext.Api.TimeOut * time.Second
 
+	if len(servers) == 0 {
+		return enum.STATUS_CODE_FAILED, "网络请求节点失败"
+	}
+
 	//这是请求的完整url
 	requestUrl := servers[0] + url
 

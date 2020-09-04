@@ -35,7 +35,7 @@ golang iris redis etcd mysql
 6.  修改config/app.tml配置 (admin proxy common 三个选项都要配置)
 7.  export GO111MODULE=auto && go mod vendor 下载依赖
 8.  rizla admin/main.go 热启动管理后台服务
-9.  cd web/ui && npm run dev 启动管理后台前端静态页面
+9.  cd web/ui && npm install && npm run dev 启动管理后台前端静态页面
 10.  rizla  proxy/main.go 启动proxy代理层的api转发服务
 11. 访问静态页面即可进入登录页面，输入默认的账号密码即可
 
