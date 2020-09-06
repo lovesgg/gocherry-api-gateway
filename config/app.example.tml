@@ -23,4 +23,8 @@ mysql_user = "root"
 mysql_pass = ""
 mysql_db = "gocherry_api_gateway"
 mysql_debug = true
+email_host = "smtp.qq.com"
+email_port = "465"
+email_user = ""
+email_pass = ""
 

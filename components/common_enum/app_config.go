@@ -32,4 +32,8 @@ type CommonConfig struct {
 	MysqlPass      string `toml:"mysql_pass"`
 	MysqlDb        string `toml:"mysql_db"`
 	MysqlDebug     bool   `toml:"mysql_debug"`
+	EmailHost      string `toml:"email_host"`
+	EmailPort      string `toml:"email_port"`
+	EmailUser      string `toml:"email_user"`
+	EmailPass      string `toml:"email_pass"`
 }

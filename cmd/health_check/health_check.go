@@ -7,6 +7,7 @@ import (
 	"gocherry-api-gateway/components/common_enum"
 	"gocherry-api-gateway/components/etcd_client"
 	"gocherry-api-gateway/components/http_client"
+	"gocherry-api-gateway/components/notice_client"
 	"gocherry-api-gateway/proxy/enum"
 	"sync"
 	"time"
@@ -40,7 +41,7 @@ func main() {
 						//在这禁用 禁用前根据实际业务需要比如请求失败5次就删除节点
 						serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + server.AppName + "/" + server.ClusterName + "/" + server.Ip
 						_, _ = etcd_client.DelKv(serverKey)
-						fmt.Println(serverKey, res, code, msg, " 禁用server")
+						notice_client.EmailSend([]string{"9932153@qq.com"}, res, msg)
 					}
 					wg.Done()
 				}(server)
