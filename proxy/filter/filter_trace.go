@@ -25,7 +25,6 @@ func (f *TraceFilter) Name(proxyContext *ProxyContext) string {
 //设置trace_id相关 放到header传到下游
 func (f *TraceFilter) Pre(proxyContext *ProxyContext) (statusCode int, err string) {
 	nowTime := time.Now().Unix()
-	proxyContext.StartTime = nowTime
 	//trace_id 应该需要记录手机号或者用户id 好排查问题
 	proxyContext.TraceId = int64(rand.Intn(500)) + nowTime + 2 + int64(rand.Intn(1000))
 

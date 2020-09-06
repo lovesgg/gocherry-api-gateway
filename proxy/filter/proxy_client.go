@@ -10,6 +10,7 @@ import (
 	"gocherry-api-gateway/components/http_client"
 	"gocherry-api-gateway/proxy/enum"
 	"gocherry-api-gateway/proxy/model"
+	"math/rand"
 	"sync"
 	"time"
 )
@@ -58,7 +59,8 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers []string) (statusCode 
 	return enum.STATUS_CODE_OK, ""
 }
 
-//获取集群对应的全部 服务节点 这里使用服务发现逻辑
+// 这里不使用服务发现 维护起来相对方便些
+// 获取集群对应的全部 服务节点
 func GetServers(proxyContext *ProxyContext, clusterName string) (m model.Server, code int) {
 	var serverList []model.Server
 	var oneServer model.Server
@@ -73,12 +75,15 @@ func GetServers(proxyContext *ProxyContext, clusterName string) (m model.Server,
 	if len(serverList) == 0 {
 		return oneServer, enum.STATUS_CODE_FAILED
 	}
-	if serverList[0].Ip == "" {
-		return oneServer, enum.STATUS_CODE_FAILED
-	}
-	return serverList[0], enum.STATUS_CODE_OK
+	key := rand.Intn(len(serverList))
+
+	return serverList[key], enum.STATUS_CODE_OK
 }
 
+
+/**
+使用服务发现
+ */
 type ClientMon struct {
 	client     *clientv3.Client
 	serverList map[string]string

@@ -2,7 +2,9 @@ package filter
 
 import (
 	"github.com/kataras/iris/context"
+	"gocherry-api-gateway/components/log_client"
 	"gocherry-api-gateway/proxy/enum"
+	"time"
 )
 
 /**
@@ -22,6 +24,17 @@ func (f *PreFilter) Name(proxyContext *ProxyContext) string {
 }
 
 func (f *PreFilter) Pre(proxyContext *ProxyContext) (statusCode int, err string) {
+	nowTime := time.Now().Unix()
+	proxyContext.StartTime = nowTime
+	//记录接口开始日志
+	log_client.LogInfo(proxyContext.RequestContext, map[string]interface{}{
+		"time": nowTime,
+		"app_name": proxyContext.AppName,
+		"url": proxyContext.Url.Path,
+		"redirect_url": proxyContext.Url.BaseRedirectUrl,
+		"params": "",//参数
+	})
+
 	//判断接口是否被禁用
 	apiStatus := proxyContext.Api.BaseApiStatus
 	if apiStatus == false {
