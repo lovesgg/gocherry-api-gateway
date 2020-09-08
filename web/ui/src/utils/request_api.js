@@ -39,7 +39,6 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    console.log(response)
     if (response.data.error !== undefined && response.data.error.code === 1024) {
       localStorage.setItem(LoginToken, "")
       router.push("/login")

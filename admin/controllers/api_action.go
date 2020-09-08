@@ -28,7 +28,10 @@ func (c *ApiController) GetList(ctx context.Context) {
 	c.GetRequest(ctx, &req)
 
 	apiKey := common_enum.ETCD_KEYS_APP_API_LIST + req.AppName
-	//etcd_client.DelKvPrefix(apiKey) //谨慎使用
+	if req.ApiForm.BaseApiUrl != "" {
+		apiKey = apiKey + req.ApiForm.BaseApiUrl
+	}
+
 	list, _ := etcd_client.GetKvPrefix(apiKey)
 
 	for _, value := range list.Kvs {

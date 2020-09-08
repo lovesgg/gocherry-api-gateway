@@ -31,7 +31,7 @@ func (f *WhiteListFilter) Pre(proxyContext *ProxyContext) (statusCode int, err s
 				break
 			}
 		}
-		flag = false
+		//flag = false
 		if flag == false {
 			return enum.STATUS_CODE_FAILED, "无权限访问此接口"
 		}

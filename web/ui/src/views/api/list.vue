@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click.native="editApi()">添加api</el-button>
+    <el-form :inline="true" :model="search" class="demo-form-inline">
+      <el-form-item label="url">
+        <el-input v-model="search.base_api_url" placeholder="url"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSearch()">查询</el-button>
+
+        <el-button type="primary" @click.native="editApi()">添加api</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-table
       :data="api_list"
@@ -52,6 +61,9 @@
       return {
         api_list: [],
         app_name: "",
+        search: {
+          "base_api_url": "",
+        },
       }
     },
     created() {
@@ -89,7 +101,19 @@
             this.$message("删除失败");
           }
         })
-
+      },
+      onSearch() {
+        let params = {
+          app_name: this.app_name,
+          api_form: {
+            base_api_url: this.search.base_api_url.trim(),
+          },
+        }
+        getApiList(params).then(response => {
+          if (response.ret === 1) {
+            this.api_list = response.data
+          }
+        })
       }
     }
   }
