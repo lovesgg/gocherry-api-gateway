@@ -36,4 +36,5 @@ type CommonConfig struct {
 	EmailPort      string `toml:"email_port"`
 	EmailUser      string `toml:"email_user"`
 	EmailPass      string `toml:"email_pass"`
+	JwtSecret      string `toml:"jwt_secret"`
 }

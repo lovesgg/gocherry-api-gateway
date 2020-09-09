@@ -27,4 +27,5 @@ email_host = "smtp.qq.com"
 email_port = "465"
 email_user = ""
 email_pass = ""
+jwt_secret = "chris"
 

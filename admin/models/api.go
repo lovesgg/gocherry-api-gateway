@@ -16,6 +16,7 @@ type Api struct {
 	TimeOut            time.Duration `json:"time_out"`
 	IpBlack            string        `json:"ip_black"`
 	UserAuth           bool          `json:"user_auth"`
+	JwtAuth            bool          `json:"jwt_auth"`
 	WhiteList          string        `json:"white_list"`
 	WhiteListCheck     bool          `json:"white_list_check"`
 	UpdateTime         string        `json:"update_time"`

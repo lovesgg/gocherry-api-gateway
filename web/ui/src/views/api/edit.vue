@@ -35,8 +35,12 @@
         <el-switch v-model="apiForm.reduce_level"></el-switch>
       </el-form-item>
 
-      <el-form-item label="是否需要登录" prop="user_auth">
+      <el-form-item label="auth授权登录" prop="user_auth">
         <el-switch v-model="apiForm.user_auth"></el-switch>
+      </el-form-item>
+
+      <el-form-item label="jwt授权登录" prop="jwt_auth">
+        <el-switch v-model="apiForm.jwt_auth"></el-switch>
       </el-form-item>
 
       <el-form-item label="缓存/秒(0就是禁用)" prop="cache_save" required="">
@@ -103,6 +107,7 @@
           time_out: 3,
           ip_black: '',
           user_auth: false,
+          jwt_auth: false,
           white_list_check: false,
           white_list: "",
 
@@ -137,7 +142,10 @@
             {required: true, message: '降级状态'}
           ],
           user_auth: [
-            {required: true, message: '登录校验'}
+            {required: true, message: 'auth登录校验'}
+          ],
+          jwt_auth: [
+            {required: true, message: 'jwt校验'}
           ],
           white_list_check: [
             {required: true, message: '白名单状态'}
