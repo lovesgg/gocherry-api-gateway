@@ -4,7 +4,7 @@ Golang开发的微服务网关。实现http的接口转发，下游服务配置�
 服务降级开关，接口缓存，默认返回值配置，插件化开发启用禁用。友好的可配置界面，方便将接口快速配置使用。
 
 
-#### 基础
+#### 依赖
 golang iris redis etcd mysql
 
 #### 为什么用gocherry
@@ -35,13 +35,15 @@ golang iris redis etcd mysql
 6.  修改config/app.tml配置 (admin proxy common 三个选项都要配置)
 7.  export GO111MODULE=auto && go mod vendor 下载依赖
 8.  rizla admin/main.go 热启动管理后台服务
-9.  cd web/ui && npm install && npm run dev 启动管理后台前端静态页面
+9.  cd web/ui && npm install && npm run dev 启动管理后台前端静态页面 (ui目录下以.env.开头的可以配置端口)
 10.  rizla  proxy/main.go 启动proxy代理层的api转发服务
-11. 访问静态页面即可进入后台页面（默认端口8081），输入默认的账号密码即可
+11. 访问静态页面即可进入后台页面（默认端口8081），输入默认的账号密码即可  
 
-环境  
-(rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor)    
-  主要关注admin proxy web/ui 三个目录 
+备注  
+  1.rizla是热启动go项目 可以直接go build main.go也可以。后续加入supervisor    
+  2.主要关注admin proxy web/ui 三个目录  
+  3.更改components目录下的文件时用rizla热重启方式不会自动刷新代码，因为不在一个工作目录下。所以需要手动重启admin或proxy 
+  4.docs目录放置相关图片说明  
 
   ![](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)  
 
