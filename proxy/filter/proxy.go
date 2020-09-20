@@ -53,7 +53,7 @@ type UserInfo struct {
 /**
 接口唯一入口url处理 核心处理入口
 */
-func (c *ProxyController) DoProxyHandler(ctx context.Context, appConfig *common_enum.Config, servers []string) {
+func (c *ProxyController) DoProxyHandler(ctx context.Context, appConfig *common_enum.Config, servers *ClientMon) {
 	var proxyContext *ProxyContext
 	//首先验证app_name
 	appName := GetAppName(ctx)

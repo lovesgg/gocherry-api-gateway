@@ -3,6 +3,7 @@ package filter
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/coreos/etcd/mvcc/mvccpb"
 	"go.etcd.io/etcd/clientv3"
 	"gocherry-api-gateway/components/common_enum"
@@ -16,20 +17,22 @@ import (
 )
 
 //将url请求到目标ip + url 然后将结果返回
-func ProxyRunToServer(proxyContext *ProxyContext, servers []string) (statusCode int, err string) {
+func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCode int, err string) {
 	var responseData string
 	var code int
 
+	fmt.Println("start request server api...")
 	url := proxyContext.Url.BaseRedirectUrl //转发的地址 不是前段请求的url (有个坑 如果是get请求 前端传了参数 那么接口转发如何处理 将参数组装？)
 	method := proxyContext.RequestContext.Method()
 	timeRe := proxyContext.Api.TimeOut * time.Second
 
-	if len(servers) == 0 {
-		return enum.STATUS_CODE_FAILED, "网络请求节点失败"
+	server := GetRandServer(servers.ServerList)
+	if server == "" {
+		return enum.STATUS_CODE_FAILED, "请求服务错误，请检查服务"
 	}
 
 	//这是请求的完整url
-	requestUrl := servers[0] + url
+	requestUrl := server + url
 
 	//根据不同的method发起请求 目前支持post get 其他方法暂时不支持啊 可以自行在后台定义并在这增加方法
 	switch method {
@@ -80,27 +83,39 @@ func GetServers(proxyContext *ProxyContext, clusterName string) (m model.Server,
 	return serverList[key], enum.STATUS_CODE_OK
 }
 
+func GetRandServer(servers map[string]string) string {
+	randNum := rand.Intn(len(servers))
+	i := 0
+	for _,server := range servers {
+		if i == randNum {
+			return server
+		}
+		i = i + 1
+	}
+	return ""
+}
+
 
 /**
 使用服务发现
  */
 type ClientMon struct {
-	client     *clientv3.Client
-	serverList map[string]string
-	lock       sync.Mutex
+	Client     *clientv3.Client
+	ServerList map[string]string
+	Lock       sync.Mutex
 }
 
 // 初始化server端
-func NewClientMon() (*ClientMon, error) {
+func (this *ClientMon) NewClientMon() (*ClientMon, error) {
 	return &ClientMon{
-		client:     etcd_client.GetClient(),
-		serverList: make(map[string]string),
+		Client:     etcd_client.GetClient(),
+		ServerList: make(map[string]string),
 	}, nil
 }
 
 func (this *ClientMon) GetService() ([]string, error) {
 	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER
-	resp, err := this.client.Get(context.Background(), key_prefix, clientv3.WithPrefix())
+	resp, err := this.Client.Get(context.Background(), key_prefix, clientv3.WithPrefix())
 	if err != nil {
 		return nil, err
 	}
@@ -125,27 +140,27 @@ func (this *ClientMon) extractAddrs(resp *clientv3.GetResponse) []string {
 
 // watch负责将监听到的put、delete请求存放到指定list
 func (this *ClientMon) watcher(prefix string) {
-	rch := this.client.Watch(context.Background(), prefix, clientv3.WithPrefix())
+	rch := this.Client.Watch(context.Background(), prefix, clientv3.WithPrefix())
 	for wresp := range rch {
 		for _, ev := range wresp.Events {
 			switch ev.Type {
 			case mvccpb.PUT:
-				this.SetServiceList(string(ev.Kv.Key), string(ev.Kv.Value))
+				this.SetServiceList(string(ev.Kv.Value), string(ev.Kv.Value))
 			case mvccpb.DELETE:
-				this.DelServiceList(string(ev.Kv.Key))
+				this.DelServiceList(string(ev.Kv.Value))
 			}
 		}
 	}
 }
 
 func (this *ClientMon) SetServiceList(key, val string) {
-	this.lock.Lock()
-	defer this.lock.Unlock()
-	this.serverList[key] = string(val)
+	this.Lock.Lock()
+	defer this.Lock.Unlock()
+	this.ServerList[val] = string(val)
 }
 
 func (this *ClientMon) DelServiceList(key string) {
-	this.lock.Lock()
-	defer this.lock.Unlock()
-	delete(this.serverList, key)
+	this.Lock.Lock()
+	defer this.Lock.Unlock()
+	delete(this.ServerList, key)
 }

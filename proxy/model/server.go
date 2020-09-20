@@ -6,3 +6,7 @@ type Server struct {
 	ServerName  string `json:"server_name"`
 	Ip          string `json:"ip"`
 }
+
+type ServerNodes struct {
+	servers []string
+}

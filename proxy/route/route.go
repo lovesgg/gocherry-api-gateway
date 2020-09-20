@@ -7,7 +7,7 @@ import (
 	"gocherry-api-gateway/proxy/filter"
 )
 
-func RegisterRoutes(app *iris.Application, appConfig *common_enum.Config, servers []string) {
+func RegisterRoutes(app *iris.Application, appConfig *common_enum.Config, servers *filter.ClientMon) {
 	app.Any("/*", func(ctx context.Context) {
 		proxy := new(filter.ProxyController)
 		proxy.DoProxyHandler(ctx, appConfig, servers)

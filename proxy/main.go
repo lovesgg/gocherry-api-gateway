@@ -23,11 +23,13 @@ func main() {
 	app.Use(middleware.NewRecoverPanic())
 
 	//初始化加载所有server节点
-	client, _ := filter.NewClientMon()
-	servers, _ := client.GetService()
-	fmt.Println(servers)
+	serverNodes := new(filter.ClientMon)
+	client, _ := serverNodes.NewClientMon()
+	_, _ = client.GetService()
+	fmt.Println("alive servers: ",client.ServerList)
 
-	route.RegisterRoutes(app, appConfig, servers)
+
+	route.RegisterRoutes(app, appConfig, client)
 
 	_ = app.Run(iris.Addr(":"+appConfig.Proxy.AppPort), iris.WithConfiguration(iris.Configuration{
 		EnablePathEscape: true,

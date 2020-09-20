@@ -81,11 +81,10 @@ func (c *ServerController) Del(ctx irisContext.Context) {
 func RegisterServer(requestData ServerSaveReq) error {
 	client := etcd_client.GetClient()
 	kv := clientv3.NewKV(client)
-	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER
+	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER + requestData.Ip
 	ctx := context.Background()
 	lease := clientv3.NewLease(client)
 
-	//设置租约过期时间为20秒
 	leaseRes, err := clientv3.NewLease(client).Grant(ctx, 300)
 	if err != nil {
 		return err
