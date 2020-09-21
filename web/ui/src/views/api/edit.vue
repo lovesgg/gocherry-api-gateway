@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form :model="apiForm" :rules="rules" ref="apiForm" label-width="200px" style="width: 600px;" class="demo-ruleForm">
+    凡是需要手动输入的多个值的都以逗号 , 隔开
+
+    <el-form :model="apiForm" :rules="rules" ref="apiForm" label-width="200px" style="width: 600px;margin-top: 50px;" class="demo-ruleForm">
 
       <el-form-item label="接口名" prop="base_api_name" required>
         <el-input v-model="apiForm.base_api_name"></el-input>
@@ -35,6 +37,10 @@
         <el-switch v-model="apiForm.reduce_level"></el-switch>
       </el-form-item>
 
+      <el-form-item label="接口失败重试" prop="retry_request">
+        <el-switch v-model="apiForm.retry_request"></el-switch>
+      </el-form-item>
+
       <el-form-item label="auth授权登录" prop="user_auth">
         <el-switch v-model="apiForm.user_auth"></el-switch>
       </el-form-item>
@@ -55,7 +61,7 @@
         <el-input v-model.number="apiForm.time_out"></el-input>
       </el-form-item>
 
-      <el-form-item label="ip黑名单/ip用逗号隔离">
+      <el-form-item label="ip黑名单/逗号隔开">
         <el-input type="textarea" v-model="apiForm.ip_black"></el-input>
       </el-form-item>
 
@@ -63,8 +69,12 @@
         <el-switch v-model="apiForm.white_list_check"></el-switch>
       </el-form-item>
 
-      <el-form-item label="白名单">
+      <el-form-item label="白名单/逗号隔开">
         <el-input type="textarea" v-model="apiForm.white_list"></el-input>
+      </el-form-item>
+
+      <el-form-item label="header 参数/逗号隔开">
+        <el-input type="textarea" v-model="apiForm.header_forms"></el-input>
       </el-form-item>
 
 
@@ -109,7 +119,9 @@
           user_auth: false,
           jwt_auth: false,
           white_list_check: false,
-          white_list: "",
+          white_list: '',
+          retry_request: false,
+          header_forms: '',
 
 
         },
@@ -149,7 +161,10 @@
           ],
           white_list_check: [
             {required: true, message: '白名单状态'}
-          ]
+          ],
+          retry_request: [
+            {required: true, message: '接口失败重试'}
+          ],
 
         },
         cluster_list: [],
