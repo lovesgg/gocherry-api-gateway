@@ -20,4 +20,6 @@ type Api struct {
 	WhiteList          string        `json:"white_list"`
 	WhiteListCheck     bool          `json:"white_list_check"`
 	UpdateTime         string        `json:"update_time"`
+	RetryRequest       bool          `json:"retry_request"`
+	HeaderForms        string        `json:"header_forms"`
 }

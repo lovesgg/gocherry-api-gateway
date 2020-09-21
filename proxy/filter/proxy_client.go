@@ -12,6 +12,7 @@ import (
 	"gocherry-api-gateway/proxy/enum"
 	"gocherry-api-gateway/proxy/model"
 	"math/rand"
+	"strings"
 	"sync"
 	"time"
 )
@@ -21,18 +22,21 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCod
 	var responseData string
 	var code int
 
-	fmt.Println("start request server api...")
 	url := proxyContext.Url.BaseRedirectUrl //转发的地址 不是前段请求的url (有个坑 如果是get请求 前端传了参数 那么接口转发如何处理 将参数组装？)
 	method := proxyContext.RequestContext.Method()
 	timeRe := proxyContext.Api.TimeOut * time.Second
 
-	server := GetRandServer(servers.ServerList)
+	//server := GetRandServer(servers.ServerList) //1.这里是调服务发现的server ip
+	server := GetServers(proxyContext) //2.这里是调普通的server ip 这里好维护些
 	if server == "" {
 		return enum.STATUS_CODE_FAILED, "请求服务错误，请检查服务"
 	}
 
+	GetHeaders(proxyContext)
+
 	//这是请求的完整url
 	requestUrl := server + url
+	fmt.Println("start request server api... ", requestUrl)
 
 	//根据不同的method发起请求 目前支持post get 其他方法暂时不支持啊 可以自行在后台定义并在这增加方法
 	switch method {
@@ -42,13 +46,13 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCod
 		var postData map[string]string
 		// 解析参数 存入map
 		_ = decoder.Decode(&postData)
-		responseData, code, err = http_client.Post(requestUrl, postData, timeRe)
+		responseData, code, err = http_client.Post(requestUrl, postData, timeRe, nil, proxyContext.RequestContext)
 		if code != enum.STATUS_CODE_OK {
 			return enum.STATUS_CODE_FAILED, err
 		}
 		break
 	case "GET":
-		responseData, code, err = http_client.Get(requestUrl, timeRe)
+		responseData, code, err = http_client.Get(requestUrl, timeRe, nil, proxyContext.RequestContext)
 		if code != enum.STATUS_CODE_OK {
 			return enum.STATUS_CODE_FAILED, err
 		}
@@ -64,11 +68,11 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCod
 
 // 这里不使用服务发现 维护起来相对方便些
 // 获取集群对应的全部 服务节点
-func GetServers(proxyContext *ProxyContext, clusterName string) (m model.Server, code int) {
+func GetServers(proxyContext *ProxyContext) string {
 	var serverList []model.Server
 	var oneServer model.Server
 
-	serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + proxyContext.AppName + "/" + clusterName
+	serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + proxyContext.AppName + "/" + proxyContext.Api.BaseClusterName
 	list, _ := etcd_client.GetKvPrefix(serverKey)
 
 	for _, value := range list.Kvs {
@@ -76,11 +80,11 @@ func GetServers(proxyContext *ProxyContext, clusterName string) (m model.Server,
 		serverList = append(serverList, oneServer)
 	}
 	if len(serverList) == 0 {
-		return oneServer, enum.STATUS_CODE_FAILED
+		return ""
 	}
 	key := rand.Intn(len(serverList))
 
-	return serverList[key], enum.STATUS_CODE_OK
+	return serverList[key].Ip
 }
 
 func GetRandServer(servers map[string]string) string {
@@ -163,4 +167,16 @@ func (this *ClientMon) DelServiceList(key string) {
 	this.Lock.Lock()
 	defer this.Lock.Unlock()
 	delete(this.ServerList, key)
+}
+
+/**
+判断是否需要设置header到下游接口
+ */
+func GetHeaders(proxyContext *ProxyContext) ([]string) {
+	var headers []string
+	if proxyContext.Api.HeaderForms != "" {
+		header := strings.Split(proxyContext.Api.HeaderForms, ",")
+		return  header
+	}
+	return headers
 }

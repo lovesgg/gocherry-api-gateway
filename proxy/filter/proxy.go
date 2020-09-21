@@ -2,6 +2,7 @@ package filter
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kataras/iris/context"
 	simpleRate "github.com/yangwenmai/ratelimit/simpleratelimit"
 	"gocherry-api-gateway/admin/controllers"
@@ -89,8 +90,18 @@ func (c *ProxyController) DoProxyHandler(ctx context.Context, appConfig *common_
 	//初始化插件没问题后组装请求到目标服务对应的地址，将结果返回
 	res, msg := ProxyRunToServer(proxyContext, servers)
 	if res != enum.STATUS_CODE_OK {
-		c.RenderError(ctx, common_enum.ComError{Msg: msg})
-		return
+		//判断是否需要重试
+		if proxyContext.Api.RetryRequest {
+			fmt.Println("retry request url ", proxyContext.Api.BaseApiUrl)
+			res, msg = ProxyRunToServer(proxyContext, servers)
+			if res != enum.STATUS_CODE_OK {
+				c.RenderError(ctx, common_enum.ComError{Msg: msg})
+				return
+			}
+		} else {
+			c.RenderError(ctx, common_enum.ComError{Msg: msg})
+			return
+		}
 	}
 
 	//遍历执行插件->请求后的插件 只执行after方法
