@@ -67,7 +67,7 @@ golang iris redis etcd mysql
     (需要根据自己的环境实际情况再改下即可使用。本地测试可以不用管这个吧)
     
 
-  ![](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)  
+  ![image](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/about.png)  
 
 #### 备注
 欢迎一起探讨学习
@@ -75,7 +75,7 @@ golang iris redis etcd mysql
 #### 打赏
 
 请我喝咖啡 微信: jdk010
-  ![](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/me.jpeg)  
+  ![image](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/me.jpeg)  
 
 #### 未来计划
 1.增加更多插件，优化现有插件  
