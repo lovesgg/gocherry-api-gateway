@@ -44,7 +44,7 @@ golang iris redis etcd mysql
   1.rizla是热启动go项目 可以直接go build main.go也可以。  
   2.主要关注admin proxy web/ui 三个目录  
   3.更改components目录下的文件时用rizla热重启方式不会自动刷新代码，因为不在一个工作目录下。所以需要手动重启admin或proxy   
-  4.docs目录放置相关图片说明  
+  4.docs目录放置文档图说明,借助图片说明可更快了解gocherry的定位  
   5.生产环境部署管理:supervisor  
   
     [program:gocherry-api-gateway]
