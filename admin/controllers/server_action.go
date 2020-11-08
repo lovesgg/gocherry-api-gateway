@@ -46,15 +46,16 @@ func (c *ServerController) Save(ctx irisContext.Context) {
 	c.GetRequest(ctx, &req)
 
 	serverKey := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST + req.AppName + "/" + req.ClusterName + "/" + req.Ip
+	//serverKey := common_enum.ETCD_KEYS_APP_SERVER_REGISTER + req.ClusterName + "/" + req.Ip
 	appExists, _ := etcd_client.GetKv(serverKey)
 	if appExists != nil {
 
 	}
 	req.UpdateTime = utils.GetNowTimeFormat()
 
-	_ = RegisterServer(req)
+	//使用租约
+	//_ = RegisterServer(req)
 
-	//存储详情 用于列表展示 不作为服务发现
 	newServer, _ := json.Marshal(req)
 	_, _ = etcd_client.PutKv(serverKey, string(newServer))
 
@@ -81,7 +82,8 @@ func (c *ServerController) Del(ctx irisContext.Context) {
 func RegisterServer(requestData ServerSaveReq) error {
 	client := etcd_client.GetClient()
 	kv := clientv3.NewKV(client)
-	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER + requestData.Ip
+	//以服务名开头的key 后边proxy服务使用的时候是以服务名作为key servers节点作为数组的全局变量
+	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER + requestData.ClusterName + "/" + requestData.Ip
 	ctx := context.Background()
 	lease := clientv3.NewLease(client)
 

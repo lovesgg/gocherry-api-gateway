@@ -51,5 +51,5 @@ func (c *ClusterController) Save(ctx context.Context) {
 	newCluster, _ := json.Marshal(req)
 	_, _ = etcd_client.PutKv(appKey, string(newCluster))
 
-	c.RenderJson(ctx, "集群创建成功")
+	c.RenderJson(ctx, "服务创建成功")
 }

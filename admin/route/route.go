@@ -23,7 +23,7 @@ func RegisterRoutes(app *iris.Application) {
 	})
 
 	/**
-	集群（服务）
+	服务
 	*/
 	app.PartyFunc("/cluster", func(route router.Party) {
 		route.Post("/list", controllers.ClusterListHandler)

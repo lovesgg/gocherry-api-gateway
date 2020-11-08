@@ -23,8 +23,8 @@
         </el-checkbox-group>
       </el-form-item>
 
-      <el-form-item label="集群(服务名)" prop="base_cluster_name" required>
-        <el-select v-model="apiForm.base_cluster_name" placeholder="请选择集群">
+      <el-form-item label="服务名" prop="base_cluster_name" required>
+        <el-select v-model="apiForm.base_cluster_name" placeholder="请选择服务">
           <el-option v-for="(item,i) in cluster_list" :key="i" :label="item.cluster_name" :value="item.cluster_name"></el-option>
         </el-select>
       </el-form-item>
@@ -142,7 +142,7 @@
             {required: true, message: '状态'}
           ],
           base_cluster_name: [
-            {required: true, message: '集群名称'}
+            {required: true, message: '服务名称'}
           ],
           cache_save: [
             {required: true, message: '缓存时间'}

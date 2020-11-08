@@ -26,7 +26,7 @@ func main() {
 	serverNodes := new(filter.ClientMon)
 	client, _ := serverNodes.NewClientMon()
 	_, _ = client.GetService()
-	fmt.Println("alive servers: ",client.ServerList)
+	fmt.Println("alive servers: ", client.ServerList)
 
 
 	route.RegisterRoutes(app, appConfig, client)

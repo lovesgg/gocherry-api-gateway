@@ -4,7 +4,7 @@
 
     <el-dropdown style="width: 400px;margin-top: 20px;">
       <el-button type="primary" style="width: 400px;">
-        选择集群 [ {{cluster_name}} ]<i class="el-icon-arrow-down el-icon--right"></i>
+        选择服务 [ {{cluster_name}} ]<i class="el-icon-arrow-down el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown" style="width: 400px;">
         <el-dropdown-item v-for="(item, i) in cluster_list"
@@ -117,7 +117,7 @@
           cluster_name: this.cluster_name
         }
         if (this.app_name === "" || this.cluster_name === "") {
-          this.$message("集群|应用 不能为空");
+          this.$message("服务应用 不能为空");
           return false;
         }
         getServerList(params).then(response => {
@@ -131,7 +131,7 @@
       saveServer() {
         let app_name = localStorage.getItem(AppListCurrent) || ""
         if (this.serverEditForm.ip === "" || this.serverEditForm.server_name === "" || this.cluster_name === "" || app_name === "") {
-          this.$message("集群 | ip | 节点名 都不能为空")
+          this.$message("服务 | ip | 节点名 都不能为空")
           return false;
         }
         let params = this.serverEditForm

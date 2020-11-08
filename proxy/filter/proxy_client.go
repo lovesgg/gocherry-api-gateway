@@ -26,8 +26,8 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCod
 	method := proxyContext.RequestContext.Method()
 	timeRe := proxyContext.Api.TimeOut * time.Second
 
-	//server := GetRandServer(servers.ServerList) //1.这里是调服务发现的server ip
-	server := GetServers(proxyContext) //2.这里是调普通的server ip 这里好维护些
+	server := GetRandServer(proxyContext, servers.ServerList) //1.这里是调服务发现的server ip
+	//server := GetServers(proxyContext) //2.这里是调普通的server ip 这里好维护些
 	if server == "" {
 		return enum.STATUS_CODE_FAILED, "请求服务错误，请检查服务"
 	}
@@ -35,7 +35,7 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCod
 	GetHeaders(proxyContext)
 
 	//这是请求的完整url
-	requestUrl := server + url
+	requestUrl := "http://" + server + url
 	fmt.Println("start request server api... ", requestUrl)
 
 	//根据不同的method发起请求 目前支持post get 其他方法暂时不支持啊 可以自行在后台定义并在这增加方法
@@ -67,7 +67,7 @@ func ProxyRunToServer(proxyContext *ProxyContext, servers *ClientMon) (statusCod
 }
 
 // 这里不使用服务发现 维护起来相对方便些
-// 获取集群对应的全部 服务节点
+// 获取服务对应的全部 服务节点
 func GetServers(proxyContext *ProxyContext) string {
 	var serverList []model.Server
 	var oneServer model.Server
@@ -87,10 +87,12 @@ func GetServers(proxyContext *ProxyContext) string {
 	return serverList[key].Ip
 }
 
-func GetRandServer(servers map[string]string) string {
-	randNum := rand.Intn(len(servers))
+func GetRandServer(proxyContext *ProxyContext, servers map[string][]string) string {
+	serverKey := proxyContext.AppName + "|" + proxyContext.Api.BaseClusterName
+	serverList := servers[serverKey]
+	randNum := rand.Intn(len(serverList))
 	i := 0
-	for _,server := range servers {
+	for _, server := range serverList {
 		if i == randNum {
 			return server
 		}
@@ -99,13 +101,12 @@ func GetRandServer(servers map[string]string) string {
 	return ""
 }
 
-
 /**
 使用服务发现
- */
+*/
 type ClientMon struct {
 	Client     *clientv3.Client
-	ServerList map[string]string
+	ServerList map[string][]string
 	Lock       sync.Mutex
 }
 
@@ -113,12 +114,13 @@ type ClientMon struct {
 func (this *ClientMon) NewClientMon() (*ClientMon, error) {
 	return &ClientMon{
 		Client:     etcd_client.GetClient(),
-		ServerList: make(map[string]string),
+		ServerList: make(map[string][]string),
 	}, nil
 }
 
 func (this *ClientMon) GetService() ([]string, error) {
-	key_prefix := common_enum.ETCD_KEYS_APP_SERVER_REGISTER
+	//_, _ = etcd_client.DelKvPrefix("/keyClusterServerAll/")
+	key_prefix := common_enum.ETCD_KEYS_APP_CLUSTER_SERVER_LIST
 	resp, err := this.Client.Get(context.Background(), key_prefix, clientv3.WithPrefix())
 	if err != nil {
 		return nil, err
@@ -151,32 +153,51 @@ func (this *ClientMon) watcher(prefix string) {
 			case mvccpb.PUT:
 				this.SetServiceList(string(ev.Kv.Value), string(ev.Kv.Value))
 			case mvccpb.DELETE:
-				this.DelServiceList(string(ev.Kv.Value))
+				this.DelServiceList(string(ev.Kv.Key), string(ev.Kv.Value))
 			}
 		}
 	}
 }
 
 func (this *ClientMon) SetServiceList(key, val string) {
+	var server model.Server
 	this.Lock.Lock()
 	defer this.Lock.Unlock()
-	this.ServerList[val] = string(val)
+	_ = json.Unmarshal([]byte(val), &server)
+	nodesKey := server.AppName + "|" + server.ClusterName
+	nodesIp := server.Ip
+
+	this.ServerList[nodesKey] = append(this.ServerList[nodesKey], nodesIp)
 }
 
-func (this *ClientMon) DelServiceList(key string) {
+func (this *ClientMon) DelServiceList(key string, value string) {
 	this.Lock.Lock()
 	defer this.Lock.Unlock()
-	delete(this.ServerList, key)
+
+	var newServers []string //新的节点
+
+	keys := strings.Split(key, "/")
+
+	serverKey := keys[2] + "|" + keys[3]
+	servers := this.ServerList[serverKey]
+	for _, node := range servers {
+		if node != keys[4] {
+			newServers = append(newServers, node)
+		}
+	}
+
+	//重新赋值
+	this.ServerList[serverKey] = newServers
 }
 
 /**
 判断是否需要设置header到下游接口
- */
+*/
 func GetHeaders(proxyContext *ProxyContext) ([]string) {
 	var headers []string
 	if proxyContext.Api.HeaderForms != "" {
 		header := strings.Split(proxyContext.Api.HeaderForms, ",")
-		return  header
+		return header
 	}
 	return headers
 }

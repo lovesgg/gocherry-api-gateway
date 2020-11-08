@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click.native="dialogFormVisible = true">添加集群</el-button>
+    <el-button type="primary" @click.native="dialogFormVisible = true">添加服务</el-button>
 
     <el-table
       :data="cluster_list"
       style="width: 100%;margin-top: 20px;">
       <el-table-column
         prop="title"
-        label="集群名"
+        label="服务名"
         width="180">
       </el-table-column>
       <el-table-column
         prop="cluster_name"
-        label="集群id"
+        label="服务id"
         width="180">
       </el-table-column>
       <el-table-column
@@ -40,15 +40,15 @@
     </el-table>
 
 
-    <el-dialog title="新增集群" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增服务" :visible.sync="dialogFormVisible">
       <el-form :model="clusterEditForm">
-        <el-form-item label="集群中文名称" :label-width="formLabelWidth">
+        <el-form-item label="服务中文名称" :label-width="formLabelWidth">
           <el-input v-model="clusterEditForm.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="集群英文名称" :label-width="formLabelWidth">
+        <el-form-item label="服务英文名称" :label-width="formLabelWidth">
           <el-input v-model="clusterEditForm.cluster_name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="集群简要描述" :label-width="formLabelWidth">
+        <el-form-item label="服务简要描述" :label-width="formLabelWidth">
           <el-input v-model="clusterEditForm.detail" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -86,7 +86,7 @@
       saveCluster() {
         let app_name = localStorage.getItem(AppListCurrent) || ""
         if (this.clusterEditForm.cluster_name === "" || this.clusterEditForm.title === "" || this.clusterEditForm.detail === "" || app_name === "") {
-          this.$message("集群内容|应用 不能为空")
+          this.$message("服务内容|应用 不能为空")
           return false;
         }
         let params = this.clusterEditForm

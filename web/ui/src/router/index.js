@@ -87,7 +87,7 @@ export const constantRoutes = [
         path: 'list',
         name: 'ClusterList',
         component: () => import('@/views/cluster/list'),
-        meta: {title: '集群列表', icon: 'table'}
+        meta: {title: '服务列表', icon: 'table'}
       },
       {
         path: 'list1',
