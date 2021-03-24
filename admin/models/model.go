@@ -26,7 +26,7 @@ func GetInstance() *MysqlConnectiPool {
 
 func (m *MysqlConnectiPool) InitDataPool() (issucc bool) {
 	appConfig := services.GetAppConfig().Common
-	conn := appConfig.MysqlUser + ":" +appConfig.MysqlPass + "@tcp(" + appConfig.MysqlHost + ":" + appConfig.MysqlPort + ")/" + appConfig.MysqlDb
+	conn := appConfig.MysqlUser + ":" +appConfig.MysqlPass + "@tcp(" + appConfig.MysqlHost + ":" + appConfig.MysqlPort + ")/" + appConfig.MysqlDb + "?parseTime=true"
 
 	db, err_db = gorm.Open("mysql", conn)
 	db.SingularTable(true)
