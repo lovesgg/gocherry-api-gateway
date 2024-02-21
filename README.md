@@ -74,9 +74,6 @@ golang iris redis etcd mysql
 
 #### 打赏
 
-请我喝咖啡 微信: jdk010
-  ![image](https://github.com/lovesgg/gocherry-api-gateway/blob/master/docs/me.jpeg)  
-
 #### 未来计划
 1.增加更多插件，优化现有插件  
 2.服务发现优化  
